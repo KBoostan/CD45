@@ -1,0 +1,66 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+Early1.data <- Read10X(data.dir = "../kaveh/Documents/Early1/filtered_gene_bc_matrices/mm10/")
+Early1 <- CreateSeuratObject(counts = Early1.data, project = "Early1", min.cells = 3, min.features = 200)
+Early2.data <- Read10X(data.dir = "../kaveh/Documents/Early2/filtered_gene_bc_matrices/mm10/")
+Early2 <- CreateSeuratObject(counts = Early2.data, project = "Early2", min.cells = 3, min.features = 200)
+Disease1.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 1/filtered_gene_bc_matrices/mm10/")
+Disease1 <- CreateSeuratObject(counts = Disease1.data, project = "Disease1", min.cells = 3, min.features = 200)
+Disease2.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 2/filtered_gene_bc_matrices/mm10/")
+Disease2 <- CreateSeuratObject(counts = Disease2.data, project = "Disease2", min.cells = 3, min.features = 200)
+Disease3.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 3/filtered_gene_bc_matrices/mm10/")
+Disease3 <- CreateSeuratObject(counts = Disease3.data, project = "Disease3", min.cells = 3, min.features = 200)
+CD45Int <- merge(Early1, y = c(Early2, Disease1, Disease2, Disease3))
+add.cell.ids = c("Early1", "Early2", "Disease1", "Disease2", "Disease3")
+#Code to run to separate the early from the late disease 
+
+```
+
+```{r}
+CD45Int[["percent.mt"]] <- PercentageFeatureSet(CD45Int, pattern = "^MT-")
+CD45Int <- subset(CD45Int, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+```
+
+
+```{r}
+CD45Int <- NormalizeData(CD45Int)
+CD45Int <- FindVariableFeatures(CD45Int, selection.method = "vst", nfeatures = 2000)
+all.genes <- rownames(CD45Int)
+CD45Int <- ScaleData(CD45Int, features = all.genes)
+```
+
+```{r}
+CD45Int <- RunPCA(CD45Int)
+CD45Int <- FindNeighbors(CD45Int, dims= 1:10)
+CD45Int <- FindClusters(CD45Int, resolution = 0.5)
+CD45Int <- RunTSNE(CD45Int)
+DimPlot(CD45Int, reduction = "tsne")
+
+
+```
+
+```{r}
+library(SingleR)
+library(scater)
+library(scRNAseq)
+CD45ImmGen <- ImmGenData()
+CD45ImmGen
+CD45SC <- as.SingleCellExperiment(CD45Int)
+CD45SC <- logNormCounts(CD45SC)
+pred.CD45SC <- SingleR(test = CD45SC, ref = CD45ImmGen, labels = CD45ImmGen$label.main)
+pred.CD45SC
+```
+
+```{r}
+table(pred.CD45SC$labels)
+CD45Int[["SingleR.labels"]]<- pred.CD45SC$labels
+new.cluster.ids <- c("B cells", "B cells, pro", "Basophils", "DC", "Endothelial cells", "Eosinophils", "Epithelial cells", "Fibroblasts", "ILC", "Macrophages", "Mast cells", "Microglia", "Monocytes", "Neutrophils", "NK cells", "NKT", "Stem cells", "Stromal cells", "T cells", "Tgd" )
+names(new.cluster.ids) <- levels(CD45Int)
+TSNEPlot(CD45Int, label = TRUE, pt.size = 0.5, group.by = "SingleR.labels") + NoLegend()
+```
+
