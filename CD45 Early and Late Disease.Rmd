@@ -24,6 +24,7 @@ add.cell.ids = c("Early1", "Early2", "Disease1", "Disease2", "Disease3")
 ```{r}
 CD45Int[["percent.mt"]] <- PercentageFeatureSet(CD45Int, pattern = "^MT-")
 CD45Int <- subset(CD45Int, subset = nFeature_RNA > 200 & nFeature_RNA < 2500 & percent.mt < 5)
+C45Int <- SCTransform(CD45Int, vars.to.regress = "percent.mt", verbose = FALSE)
 ```
 
 
