@@ -10,14 +10,14 @@ Early1.data <- Read10X(data.dir = "../kaveh/Documents/Early1/filtered_gene_bc_ma
 Early1 <- CreateSeuratObject(counts = Early1.data, project = "Early1", min.cells = 3, min.features = 200)
 Early2.data <- Read10X(data.dir = "../kaveh/Documents/Early2/filtered_gene_bc_matrices/mm10/")
 Early2 <- CreateSeuratObject(counts = Early2.data, project = "Early2", min.cells = 3, min.features = 200)
-Disease1.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 1/filtered_gene_bc_matrices/mm10/")
-Disease1 <- CreateSeuratObject(counts = Disease1.data, project = "Disease1", min.cells = 3, min.features = 200)
-Disease2.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 2/filtered_gene_bc_matrices/mm10/")
-Disease2 <- CreateSeuratObject(counts = Disease2.data, project = "Disease2", min.cells = 3, min.features = 200)
-Disease3.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 3/filtered_gene_bc_matrices/mm10/")
-Disease3 <- CreateSeuratObject(counts = Disease3.data, project = "Disease3", min.cells = 3, min.features = 200)
-CD45Int <- merge(Early1, y = c(Early2, Disease1, Disease2, Disease3))
-add.cell.ids = c("Early1", "Early2", "Disease1", "Disease2", "Disease3")
+Late1.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 1/filtered_gene_bc_matrices/mm10/")
+Late1 <- CreateSeuratObject(counts = Disease1.data, project = "Disease1", min.cells = 3, min.features = 200)
+Late2.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 2/filtered_gene_bc_matrices/mm10/")
+Late2 <- CreateSeuratObject(counts = Disease2.data, project = "Disease2", min.cells = 3, min.features = 200)
+Late3.data <- Read10X(data.dir = "../kaveh/Documents/Late Disease 3/filtered_gene_bc_matrices/mm10/")
+Late3 <- CreateSeuratObject(counts = Disease3.data, project = "Disease3", min.cells = 3, min.features = 200)
+CD45Int <- merge(Early1, y = c(Early2, Late2, Late3))
+add.cell.ids = c("Early1", "Early2", "Late2", "Late3")
 #Code to run to separate the early from the late disease 
 
 ```
