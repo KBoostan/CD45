@@ -70,3 +70,16 @@ names(new.cluster.ids) <- levels(CD45Int)
 TSNEPlot(CD45Int, label = TRUE, pt.size = 0.5, group.by = "SingleR.labels") + NoLegend()
 ```
 
+```{r}
+CD45Macs <- CD45Int[, CD45Int$SingleR.labels == "Macrophages"]
+C45Macs <- RunPCA(CD45Macs)
+CD45Macs <- FindNeighbors(CD45Macs, dims = 1:10)
+CD45Macs <- FindClusters(CD45Macs, resolution = 0.5)
+CD45Macs <- RunTSNE(CD45Macs, dims = 1:10)
+plot1 <- DimPlot(CD45Macs, reduction = "tsne")
+plot2 <- DimPlot(CD45Macs, reduction = "tsne", group.by = "group")
+plot1 +plot2
+Macplot<- plot1
+```
+
+#After this, use CombinePlots function to combine MacPlot and the respective Mac tsne plot for our dataset 
