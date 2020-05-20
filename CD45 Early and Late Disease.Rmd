@@ -58,6 +58,7 @@ CD45ImmGen
 CD45SC <- as.SingleCellExperiment(CD45Int)
 CD45SC <- logNormCounts(CD45SC)
 pred.CD45SC <- SingleR(test = CD45SC, ref = CD45ImmGen, labels = CD45ImmGen$label.main)
+pred.macsSCfine <- SingleR(test = macsSC, ref = immGen, labels = immGen$label.fine)
 pred.CD45SC
 ```
 
